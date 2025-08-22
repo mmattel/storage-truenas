@@ -1,5 +1,5 @@
 #!/bin/bash
-# get nvme device values
+# get nvme device values, note that all nvme's show similar power values which when summing are way to high...
 
 # Make sure only root can run this script
 if [ "$(id -u -n)" != "root" ]; then

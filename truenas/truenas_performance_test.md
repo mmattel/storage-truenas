@@ -1,4 +1,4 @@
-# TrueNAS Performance Test on BeeLink ME Mini
+# TrueNAS Performance and Power Test on BeeLink ME Mini
 
 The test should give some guidelines and hints only and is not intened to be complete or high tuned.
 
@@ -19,7 +19,7 @@ To measure the power, two mechanisms were used, the table shows the hardware ver
 
 Note that when under load, the fan was doing only a bit more work but still being very silent. I purchased special heatpads for the SSD's with 13W/mk (usual it is 6W/mk) fearing that the system may overheat by the Samsung PRO SSD's. I will install them when they arrive but it seems that this purchase was not necessary.
 
-## Transfer Test Without Network
+## Transfer/Power Test Without Network
 
 This test measures the internal transfer rate only without any network IO.
 
