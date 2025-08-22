@@ -3,7 +3,11 @@
 # tested with a user who has a bash environment
 # create a bash script such as 'read_power.sh'
 # make it executable with 'sudo chmod +x read_power.sh'
+
+# note that the values are accurate in idle but not in load mode
 ---
+
+#!/bin/bash
 
 # wait for x seconds
 time=10

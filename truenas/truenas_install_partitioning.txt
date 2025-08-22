@@ -1,3 +1,7 @@
+# easier to read: truenas_install_partitioning.pdf
+
+# below is the original thread for the sake of history
+
 # https://gist.github.com/gangefors/2029e26501601a99c501599f5b100aa6?permalink_comment_id=5617144#gistcomment-5617144
 # https://filedn.com/lkRPCRy7Ru0jk5gWAtbH9Cf/Creating%20a%20boot%20app%20and%20data%20partition%20within%20the%20TrueNAS%20Community%20boot%20drive.pdf
 
