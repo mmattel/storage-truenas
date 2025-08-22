@@ -1,0 +1,9 @@
+#!/bin/bash
+# report if the last shutdown was intentionally or dirty
+# inspired by: https://askubuntu.com/questions/297629/how-to-verify-if-a-reboot-was-due-to-power-outage
+
+if [[ "$(last -x | tac | grep -B1 boot | tail -2 | grep shutdown)" == "" ]]; then
+  echo "['$(date)'] Last shutdown: Uncontrolled (not safe). Possible power failure."
+else
+  echo "['$(date)'] Last shutdown: Controlled (safe)"
+fi

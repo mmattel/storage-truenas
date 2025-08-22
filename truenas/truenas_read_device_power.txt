@@ -1,0 +1,53 @@
+# idea based on: https://www.baeldung.com/linux/power-consumption#4-estimate-the-power-based-on-the-energy
+
+# tested with a user who has a bash environment
+# create a bash script such as 'read_power.sh'
+# make it executable with 'sudo chmod +x read_power.sh'
+---
+
+# wait for x seconds
+time=10
+
+# adjust the calculated value like when you have a power meter and see what is really consumed
+# example, my notebook has 3.53
+correction=1
+
+# Make sure only root can run this script
+if [ "$(id -u -n)" != "root" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+# check if the required directory exists
+dir=/sys/class/powercap/*/
+file=energy_uj
+full=$dir$file
+
+echo "Reading values with a ${time}s delay"
+
+# check if there is any file present
+exists=$(find $dir -type f -name $file 2> /dev/null | wc -l)
+if [ "$exists" == "0" ]; then
+  echo "No file exists with: ${full}"
+  exit
+fi
+
+energy () {
+  # read the current consumed energy from all energy_ui resources
+  local z=($(cat $full | awk 'BEGIN { sum = 0; } { sum += $1; } END { print sum; }' "$@"))
+  echo "$z"
+}
+
+e_sum_1="$(energy)"
+#echo "before:" $e_sum_1
+
+sleep $time;
+
+e_sum_2="$(energy)"
+#echo "after: " $e_sum_2
+
+# calculate the average power used from the two readings
+# note to adapt the divisor 1e5 to e.g. 1e6 depending on the system
+power=$(awk "BEGIN { printf \"%.1f W\", $((e_sum_2 - e_sum_1)) / $time / $correction / 1e5 }")
+
+echo "Avarage Power Consumtion in ${time}s: ${power}"
