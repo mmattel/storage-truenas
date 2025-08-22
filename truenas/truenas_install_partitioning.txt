@@ -1,0 +1,105 @@
+# https://gist.github.com/gangefors/2029e26501601a99c501599f5b100aa6?permalink_comment_id=5617144#gistcomment-5617144
+# https://filedn.com/lkRPCRy7Ru0jk5gWAtbH9Cf/Creating%20a%20boot%20app%20and%20data%20partition%20within%20the%20TrueNAS%20Community%20boot%20drive.pdf
+
+Download TrueNAS Scale and burn to USB with Rufus (DD Mode).
+Boot from USB and select *Start TrueNAS SCALE Installation from the Grub loader menu.
+Select Shell from the Console Setup menu.
+From @transfairs, modify the installer to create 32GB (change +32 to +X or however big you want this partition to be) boot partition instead of using the entire drive.
+sed -i 's/-n3:0:0/-n3:0:+32G/g' /usr/lib/python3/dist-packages/truenas_installer/install.py
+exit to return from the shell
+Select Install/Upgrade from the Console Setup menu (without rebooting, first) and install to NVMe drive.
+Remove the USB and reboot.
+Next we re-partition the nvme. You must perform this next setp on console. SSH will not give you the correct access.
+
+Login to the linux shell. (currently option 8. was option 7)
+use the parted tool to enter the parted CLI
+set unit to KiB with unit KiB
+print list to show your current nvme layout. (it'll look something like this. C&P from @sthames42)
+Model: HP SSD EX900 Plus 1TB (nvme)
+Disk /dev/nvme0n1: 1024GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start        End            Size          File system  Name       Flags
+ 1      2048kiB      3072kiB        1024kiB                               bios_grub, legacy_boot
+ 2      3072kiB      527360kiB      524288kiB     fat32                   boot, esp
+ 3      527360kiB    17304576kiB    16777216kiB   zfs
+for clarity, rename the boot pool so you know exactly what is what
+name 3 boot-pool
+Confirm the change
+print list
+ Model: HP SSD EX900 Plus 1TB (nvme)
+ Disk /dev/nvme0n1: 1024GB
+ Sector size (logical/physical): 512B/512B
+ Partition Table: gpt
+ Disk Flags:
+
+ Number  Start        End            Size          File system  Name       Flags
+  1      2048kiB      3072kiB        1024kiB                               bios_grub, legacy_boot
+  2      3072kiB      527360kiB      524288kiB     fat32                   boot, esp
+  3      527360kiB    17304576kiB    16777216kiB   zfs          boot-pool
+reduce the size of that boot pool using resizepart <number> <end>. In this example i took 32GB + <start addr of #3> to get 31777350
+example: resizepart 3 31777350kib
+Description: This command will resize the boot-pool partition ID #3 to end 32gb after its start address.
+print list to confirm the resize
+print list
+ Model: HP SSD EX900 Plus 1TB (nvme)
+ Disk /dev/nvme0n1: 1024GB
+ Sector size (logical/physical): 512B/512B
+ Partition Table: gpt
+ Disk Flags:
+
+ Number  Start        End            Size          File system  Name       Flags
+  1      2048kiB      3072kiB        1024kiB                               bios_grub, legacy_boot
+  2      3072kiB      527360kiB      524288kiB     fat32                   boot, esp
+  3      527360kiB    <somewhere     16777216kiB   zfs          boot-pool
+                               around 32gb
+                               + 527360kiB>
+Now we can make the new partition. just call mkpart and follow the prompt:
+for name use apps-pool
+for type: i used zfs
+for start address: i used the end of block 3 + 2048
+for end: i used 100%
+Note: somewhere around this step you'll get a warning for not being byte aligned. i think that's due to the end address. I ignored it
+one more print list to confirm the new partition exists. I wont post an example of this one.
+Congrats you've just created /dev/nvme0n1p4 in this example!!!
+exit to return to the linux console
+Now we need to setup the zpool for the UI to pick it up
+
+Lets check what zpools we have first with zpool status
+   pool: boot-pool
+  state: ONLINE
+ config:
+
+         NAME         STATE     READ WRITE CKSUM
+         boot-pool    ONLINE       0     0     0
+           nvme0n1p3  ONLINE       0     0     0
+
+ errors: No known data errors
+lets create a new one pointing at the new partition we created called nvme0n1p4
+zpool create apps-pool /dev/nvme0n1p4
+another zpool status to make sure its there
+   pool: boot-pool
+ state: ONLINE
+config:
+
+        NAME         STATE     READ WRITE CKSUM
+        boot-pool    ONLINE       0     0     0
+          nvme0n1p3  ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: apps-pool
+ state: ONLINE
+config:
+
+        NAME         STATE     READ WRITE CKSUM
+        nvme-pool    ONLINE       0     0     0
+          nvme0n1p4  ONLINE       0     0     0
+
+errors: No known data errors
+Finally, we export it to get it on the TrueNAS UI
+zpool export apps-pool
+Viola! You're almost done. Just need to reboot for it to take affect.
+Go to the TrueNas web interface -> Storage -> Import Pool -> Import 'apps-pool'

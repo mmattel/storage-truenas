@@ -1,0 +1,8 @@
+# bios
+# https://dr.bee-link.cn/?dir=uploads%2FMEmini
+
+# https://forums.truenas.com/t/using-beelink-me-mini-with-6-nvme-drives-only-4-are-useable-in-truenas-scale/47306/38
+
+For automatic power on after power loss in the BIOS setup navigate to:
+
+Chipset > PCH-IO Configuration > State After G3 - change to [S0 state]

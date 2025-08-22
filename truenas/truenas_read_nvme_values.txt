@@ -1,0 +1,52 @@
+#!/bin/bash
+# get nvme device values
+
+# Make sure only root can run this script
+if [ "$(id -u -n)" != "root" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+DEVICES=`nvme list -o json | jq -r '.Devices[].DevicePath'`
+
+for dev in $DEVICES; do
+    model=$(nvme id-ctrl "$dev" | awk -F: '/mn/ {gsub(/^[ \t]+/, "", $2); print substr($2,1,36); exit}')
+
+    cyan="\033[1;36m"
+    red_bold="\033[1;31m"
+    reset="\033[0m"
+
+    drive_name=$(basename "$dev")
+    echo -e "${cyan}Power States for NVMe drive ${red_bold}$drive_name${reset}"
+
+    printf "%-36s %-4s %-9s %-10s %-9s %3s %3s %3s %3s %s\n" \
+        "Model" "PS" "Max pwr" "Enter Lat" "Exit Lat" "RT" "RL" "WT" "WL" "Active"
+    printf "%-36s %-4s %-9s %-10s %-9s %3s %3s %3s %3s %s\n" \
+        "------------------------------------" "----" "---------" "----------" "--------" "---" "---" "---" "---" "------"
+
+    nvme id-ctrl "$dev" | awk -v m="$model" '
+    BEGIN {
+        green="\033[1;32m"
+        reset="\033[0m"
+    }
+    /^ps[ \t]+[0-9]+/ {
+        ps = $2
+        active = (ps == "0") ? "*": ""
+        color_start = (ps == "0") ? green : ""
+        color_end = (ps == "0") ? reset : ""
+        display_model = (ps == "0") ? m : ""
+        match($0, /mp:([0-9.]+W).*enlat:([0-9]+).*exlat:([0-9]+)/, a)
+        max_pwr=a[1]; enlat=a[2]; exlat=a[3]
+        getline
+        match($0, /rrt:([0-9]+).*rrl:([0-9]+).*rwt:([0-9]+).*rwl:([0-9]+)/, b)
+        rt = (b[1] == "" ? 0 : b[1])
+        rl = (b[2] == "" ? 0 : b[2])
+        wt = (b[3] == "" ? 0 : b[3])
+        wl = (b[4] == "" ? 0 : b[4])
+        printf "%s%-36s %-4s %-9s %-10s %-9s %3s %3s %3s %3s %s%s\n", color_start, display_model, ps, max_pwr, enlat"ms", exlat"ms", rt, rl, wt, wl, active, color_end
+    }'
+
+    echo "==============================================================================================="
+    echo
+    echo
+done
