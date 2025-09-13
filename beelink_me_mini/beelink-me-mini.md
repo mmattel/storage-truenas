@@ -20,10 +20,10 @@ Note that I have added Amazon links to the additional products I used besides th
 
 ## Common and Solvable Issues
 
-* Buy the right NVME SSD's
-* Improve thermal things - not mandatory but better safe than sorry
-* The BIOS shipped usually needs an upgrade
-* Some BIOS settings need to be changed
+* Purchase the correct NVMe SSDs.
+* Improve the thermal properties. It's not mandatory, but it's better to be safe than sorry.
+* The BIOS that ships with the device usually needs to be upgraded, especially when running M1V304.
+* Some BIOS settings must be changed.
 
 ## Recommended NVME's
 
@@ -50,9 +50,11 @@ First I purchased [Aairhut Pack of 4 13W/m.K Thermal Pads](https://www.amazon.de
 
 It turned out that the 0.5 mm version was too thin, resulting in poor contact with the SSDs. The 1.0 mm version, on the other hand, was slightly too thick, causing the drives to bend excessively.
 
-The solution was to use a perfectly clean rolling pin to squeeze the 1.0 mm strips, which had already been cut to size, down to about 0.8 mm. This thickness matched the requirements without bending the drives. Since the excess material had to go somewhere, it was necessary to cut it off on all sides. 
+The solution was to use a perfectly clean rolling pin to squeeze the 1.0 mm strips, which had already been cut to size, down to about 0.7 mm. This thickness matched the requirements without bending the drives. Since the excess material had to go somewhere, it was necessary to cut it off on all sides. 
 
 Once this is complete, you can remove the original pads, replace them with the customized ones, and add the drives. After gently pressing the drives onto the pads, secure them with the screw.
+
+<img src="./IMG_3169.JPEG" width="350"> <img src="./IMG_3168.JPEG" width="361">
 
 Note that when you need to remove a drive, use a thin tool, such as a cutter or toothpick, to safely separate the drive from the pad, which should ideally remain stuck to the heatsink.
 
@@ -64,22 +66,26 @@ The main goal was to use a heat sink with the same dimensions as the Beelink ME 
 
 To accomplish this, I ordered an [Alu Heatsink 100x100x18](https://www.amazon.de/dp/B07M9RVNP5?ref=fed_asin_title) and standard [Heat Pads](https://www.amazon.de/dp/B0CF96FKJV?ref=fed_asin_title) which also come in different sizes. Since all parts have the same dimensions, it's a perfect match.
 
-First, use the 0.5 mm pad to cut out a 58-59 mm circle with a cutter which is slightly smaller than the 60 mm circle measured. It is easiest if you first trace the circle with a pen on the pad. Then, move the pad, not the cutter. Place the pad in the middle of the bottom of the Beelink ME Mini. Then, use the 1.0 mm pad to cut out a 74 mm circle. Apply it on top, covering the thin pad and the rubber pads. This should provide good contact with the heatsink when you place the Beelink ME Mini on it, while leaving the exhaust holes free.
+First, use the 0.5 mm pad to cut out a 58-59 mm circle with a sharp cutter which is slightly smaller than the 60 mm circle measured. It is easiest if you first trace the circle with a pen on the pad. Then, using a cutting board, cut through a starting point and move the pad, not the cutter. Place the pad in the middle of the bottom of the Beelink ME Mini. Then, use the 1.0 mm pad to cut out a 74 mm circle. Apply it on top, covering the thin pad and the rubber pads. This should provide good contact with the heatsink when you place the Beelink ME Mini on it, while leaving the exhaust holes free.
+
+<img src="./IMG_3292.JPEG" width="350">
 
 ## BIOS
 
 ### Update the BIOS
 
-The Beelink ME Mini typically ships with an outdated BIOS that must be upgraded before use. I consider this a mandatory task for worry-free operation.
+The Beelink ME Mini typically ships with an outdated BIOS that must be upgraded before use.
 
-To do so, you need to download the BIOS which can be found at [dr.bee-link.cn](https://dr.bee-link.cn/?dir=uploads%2FMEmini).
-At the time of writing, this was `M1V307`. You will also find instructions on how to install it.
+**I consider this a mandatory task for worry-free operation.**
+
+Download the BIOS from the source which can be found at [dr.bee-link.cn](https://dr.bee-link.cn/?dir=uploads%2FMEmini).
+At the time of writing, this was `M1V307`. You will also find instructions on how to install it. To easy access, I have provided a direct download link to the BIOS from this repository: [M1V307_12G.zip](./M1V307_12G.zip).
 
 In short, prepare a USB drive with at least 16 GB of capacity and format it to FAT32. Name the volume "WINPE" and copy the extracted files from the ZIP file to the drive. Then, boot the Beelink ME Mini from the USB inserted and the upgrade will start.
 
-USB preparation in Linux looks like this in the terminal:
+USB preparation in Linux looks like this in the terminal, assuming you already have unzipped the BIOS file:
 
-Insert the USB stick and run the following commands, **replace the devicename accordingly such as `sdc` as reported by `lsblk`**. Important, the device must not be mounted when starting the process.
+Insert the USB stick and run the following commands in order, **replace the devicename accordingly such as `sdc` as reported by `lsblk`**. Important, the USB stick must not be mounted when starting the process.
 
 ```
 lsblk
@@ -101,7 +107,7 @@ In my experience, changes made in the BIOS may not be upgrade persistent, except
   ```
   Chipset > 
   PCH-IO Configuration > 
-  State After G3 - change to [S0 state]
+  State After G3 - change to [S0 state] (was S5 state)
   ```
 
 * Set boot process:
@@ -128,7 +134,7 @@ Optimize the eMMC interface in HS400 mode for maximum data transfer speeds and r
   ```
 
 * Increase recognition time for PCIe devices such as NVME:\
-**This fixes the issue of NVMe drives not being partially recognized after rebooting or a power loss.** No need to fiddle with kernel power options for PCIe / NVME in TrueNAS! This is important because if you don't set it, you may need to reboot manually a couple of times, hoping that all NVMe drives are detected properly. 
+**This fixes the issue of NVMe drives not being partially recognized after rebooting or a power loss.** No need to fiddle with kernel power options for PCIe / NVME in TrueNAS! This is important because if you don't set it, you may need to reboot manually a couple of times, hoping that all NVMe drives are detected properly. While running TrueNAS, you can verify that all drives have been properly identified by typing `sudo nvme list`.
   ```
   PCH-IO Configuration >
   PCI Express root port (do on all roots) >
