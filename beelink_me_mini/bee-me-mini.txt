@@ -1,8 +1,0 @@
-# bios
-# https://dr.bee-link.cn/?dir=uploads%2FMEmini
-
-Latest BIOS at the time of writing: M1V305
-
-For automatic power on after power loss in the BIOS setup navigate to:
-
-Chipset > PCH-IO Configuration > State After G3 - change to [S0 state]
