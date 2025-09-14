@@ -66,7 +66,13 @@ The main goal was to use a heat sink with the same dimensions as the Beelink ME 
 
 To accomplish this, I ordered an [Alu Heatsink 100x100x18](https://www.amazon.de/dp/B07M9RVNP5?ref=fed_asin_title) and standard [Heat Pads with 6W/m.K](https://www.amazon.de/dp/B0CF96FKJV?ref=fed_asin_title) which also come in different sizes. Since all parts have the same dimensions, it's a perfect match.
 
-First, use the 0.5 mm pad to cut out a 58-59 mm circle with a sharp cutter which is slightly smaller than the 60 mm inner circle measured. It is easiest if you first trace the circle with a pen on the pad. Then, using a cutting board, cut through a starting point and move the pad, not the cutter. Place the pad in the middle of the bottom of the Beelink ME Mini. Since this will cover your Beelink ME Mini serial number, it might be a good idea to take a photo beforehand for later use. Then, use the 1.0 mm pad to cut out a 74 mm circle. Apply it on top, covering the 0.5 mm pad and the rubber pads. This should provide good contact with the heatsink when you place the Beelink ME Mini on it, while leaving the exhaust holes free.
+First, use the 0.5 mm pad to cut out a 58-59 mm circle with a sharp cutter which is slightly smaller than the 60 mm inner circle measured. It is easiest if you first trace the circle with a pen on the pad. Then, using a cutting board, cut through a starting point and move the pad, not the cutter. Place the pad in the middle of the bottom of the Beelink ME Mini.
+
+<img src="./beelink-me-mini-bottom-view.png" width="350">
+
+Since this will cover your Beelink ME Mini serial number, it might be a good idea to take a photo beforehand for later use. Then, use the 1.0 mm pad to cut out a 74 mm circle. Apply it on top, covering the 0.5 mm pad and the rubber pads. This should provide good contact with the heatsink when you place the Beelink ME Mini on it, while leaving the exhaust holes free.
+
+Finally, put the Beelink ME Mini on the heat sink.
 
 <img src="./IMG_3292.JPEG" width="350">
 
