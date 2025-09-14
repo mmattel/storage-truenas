@@ -33,7 +33,7 @@ I use six [Samsung 990 PRO 2TB NVMe SSDs](https://www.amazon.de/dp/B0B9C4DKKG?re
 
 I was worried that the Samsung 990 PRO would push my system into high thermal regions, so I upgraded the thermal environment.
 
-**Note that this turned out not to be mandatory**, but it lowered the temperature to ~46° for the CPU and ~49° for the NVMe drives in normal operation mode, which is quite nice. The location at which you place the Beelink ME Mini may affect the temperature.
+**Note that this turned out not to be mandatory**, but it lowered the temperature to ~42° for the CPU and ~45° for the NVMe drives in normal operation mode, which is quite nice. The location at which you place the Beelink ME Mini may affect the temperature.
 
 The changes made are the following:
 
