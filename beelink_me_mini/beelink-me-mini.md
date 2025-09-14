@@ -22,7 +22,7 @@ Note that I have added Amazon links to the additional products I used besides th
 
 * Purchase the correct NVMe SSDs.
 * Improve the thermal properties. It's not mandatory, but it's better to be safe than sorry.
-* The BIOS that ships with the device usually needs to be upgraded, especially when running M1V304.
+* The BIOS that ships with the device usually needs to be upgraded, especially when running M1V304 or lower.
 * Some BIOS settings must be changed.
 
 ## Recommended NVME's
@@ -33,7 +33,7 @@ I use six [Samsung 990 PRO 2TB NVMe SSDs](https://www.amazon.de/dp/B0B9C4DKKG?re
 
 I was worried that the Samsung 990 PRO would push my system into high thermal regions, so I upgraded the thermal environment.
 
-**Note that this turned out not to be mandatory**, but it lowered the temperature to ~42° for the CPU and ~45° for the NVMe drives in normal operation mode, which is quite nice. The location at which you place the Beelink ME Mini may affect the temperature.
+**Note that this turned out not to be mandatory**, but it lowered the temperature with minimal readings to ~42° for the CPU and ~45° for the NVMe drives in normal operating mode, which is great. The location at which you place the Beelink ME Mini may affect the temperature.
 
 The changes made are the following:
 
@@ -44,9 +44,9 @@ The changes made are the following:
 
 This is a ZEN job and should not be done by people having limited patience and shaky fingers :sweat_smile:
 
-First I purchased [Aairhut Pack of 4 13W/m.K Thermal Pads](https://www.amazon.de/Aairhut-W%C3%A4rmeleitpads-Hitzebest%C3%A4ndigkeit-Abdeckung-selbstklebenden/dp/B0BQJGY7H4/ref=sr_1_2?sr=8-2). They come in different thicknesses, and they can be cut to different sizes - with a scissor.
+First I purchased [Aairhut Pack of 4 13W/m.K Thermal Pads](https://www.amazon.de/Aairhut-W%C3%A4rmeleitpads-Hitzebest%C3%A4ndigkeit-Abdeckung-selbstklebenden/dp/B0BQJGY7H4/ref=sr_1_2?sr=8-2) which have improved thermal dissipation (~3x compared to standard 6W/m.k.). They come in different thicknesses, and they can be cut to different sizes - with a scissor. The cutter tore them apart, especially the thin ones.
 
-**Note** that you need to handle them with absolute care. Once the protection foil is off, it wont stick again on, though you have good contact when in use.
+**Note** that you need to handle them with absolute care. Once the protection foil is off, it wont stick again on, though the pads have good contact when in use.
 
 It turned out that the 0.5 mm version was too thin, resulting in poor contact with the SSDs. The 1.0 mm version, on the other hand, was slightly too thick, causing the drives to bend excessively.
 
@@ -64,9 +64,9 @@ When this is done, close the cover of the Beelink ME Mini.
 
 The main goal was to use a heat sink with the same dimensions as the Beelink ME Mini, on which it will be placed.
 
-To accomplish this, I ordered an [Alu Heatsink 100x100x18](https://www.amazon.de/dp/B07M9RVNP5?ref=fed_asin_title) and standard [Heat Pads](https://www.amazon.de/dp/B0CF96FKJV?ref=fed_asin_title) which also come in different sizes. Since all parts have the same dimensions, it's a perfect match.
+To accomplish this, I ordered an [Alu Heatsink 100x100x18](https://www.amazon.de/dp/B07M9RVNP5?ref=fed_asin_title) and standard [Heat Pads with 6W/m.K](https://www.amazon.de/dp/B0CF96FKJV?ref=fed_asin_title) which also come in different sizes. Since all parts have the same dimensions, it's a perfect match.
 
-First, use the 0.5 mm pad to cut out a 58-59 mm circle with a sharp cutter which is slightly smaller than the 60 mm circle measured. It is easiest if you first trace the circle with a pen on the pad. Then, using a cutting board, cut through a starting point and move the pad, not the cutter. Place the pad in the middle of the bottom of the Beelink ME Mini. Then, use the 1.0 mm pad to cut out a 74 mm circle. Apply it on top, covering the thin pad and the rubber pads. This should provide good contact with the heatsink when you place the Beelink ME Mini on it, while leaving the exhaust holes free.
+First, use the 0.5 mm pad to cut out a 58-59 mm circle with a sharp cutter which is slightly smaller than the 60 mm inner circle measured. It is easiest if you first trace the circle with a pen on the pad. Then, using a cutting board, cut through a starting point and move the pad, not the cutter. Place the pad in the middle of the bottom of the Beelink ME Mini. Since this will cover your Beelink ME Mini serial number, it might be a good idea to take a photo beforehand for later use. Then, use the 1.0 mm pad to cut out a 74 mm circle. Apply it on top, covering the 0.5 mm pad and the rubber pads. This should provide good contact with the heatsink when you place the Beelink ME Mini on it, while leaving the exhaust holes free.
 
 <img src="./IMG_3292.JPEG" width="350">
 
@@ -85,14 +85,14 @@ In short, prepare a USB drive with at least 16 GB of capacity and format it to F
 
 USB preparation in Linux looks like this in the terminal, assuming you already have unzipped the BIOS file:
 
-Insert the USB stick and run the following commands in order, **replace the devicename accordingly such as `sdc` as reported by `lsblk`**. Important, the USB stick must not be mounted when starting the process.
+Insert the USB stick and run the following commands in order, **replace the device name accordingly such as `sdc` as reported by `lsblk`**. Important, the USB stick must not be mounted when starting the process.
 
 ```
 lsblk
 sudo mkfs.vfat -F 32 -n 'WINPE' /dev/sdc1
 sudo mkdir -p /mount/usb 
 sudo mount /dev/sdc1 /media/usb
-sudo cp -rp <source of extracted BIOS> /media/usb
+sudo cp -rp <source of extracted BIOS>/. /media/usb
 sudo sync
 sudo umount /dev/sdc1
 ```
