@@ -14,7 +14,9 @@
 
 The [Beelink ME Mini](https://www.bee-link.com/products/beelink-me-mini-n150) is imho a perfect hardware for running [TrueNas](https://www.truenas.com/) in home and small office environments.
 
-There are some caveats from other posters you will find on the interent, but from my perspective it is a good choice **when you prepare properly** especially the BIOS.
+There are some caveats from other posters you will find on the interent, but from my perspective it is a good choice **when you prepare properly** especially the BIOS and using up-to-date NVMe firmware.
+
+After months in opration, it turns out that the `Beelink ME Mini` is fully reliable an absolutly silent.
 
 Note that I have added Amazon links to the additional products I used besides the Beelink Me Mini.
 
@@ -33,7 +35,7 @@ I use six [Samsung 990 PRO 2TB NVMe SSDs](https://www.amazon.de/dp/B0B9C4DKKG?re
 
 I was worried that the Samsung 990 PRO would push my system into high thermal regions, so I upgraded the thermal environment.
 
-**Note that this turned out not to be mandatory**, but it lowered the temperature with minimal readings to ~42° for the CPU and ~45° for the NVMe drives in normal operating mode, which is great. The location at which you place the Beelink ME Mini may affect the temperature.
+**Note that this turned out not to be mandatory**, but it lowered the temperature with **minimal** readings to ~42° for the CPU and ~45° for the NVMe drives. In average, the reading is 46/49 degrees at a total of 15-18W  power consumption in normal operating mode. The location at which you place the Beelink ME Mini may of course affect the temperature.
 
 The changes made are the following:
 
