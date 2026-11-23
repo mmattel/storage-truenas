@@ -114,7 +114,8 @@ The Beelink ME Mini typically ships with an outdated BIOS that must be upgraded 
 
 Download the BIOS from the source which can be found at [dr.bee-link.cn](https://dr.bee-link.cn/?dir=uploads%2FMEmini).
 At the time of writing, this was `M1V307`; my device now runs `M1V404`. You will also find instructions on how to install it. For easy access, I have provided a direct download link to an older BIOS from this repository: [M1V307_12G.zip](./M1V307_12G.zip).\
-**Note:** the BIOS files are specific to the RAM variant (e.g. `12G` and `16G`). Always download the latest BIOS that matches **your** device from the source above.
+**Note:** the BIOS files are specific to the RAM variant (e.g. `12G` and `16G`). Always download the latest BIOS that matches **your** device from the source above.\
+Also check the LAN hardware of your device: the download area contains a separate folder `ME-MINI(new-LAN-version-2_5G+5G)` for a newer hardware revision with one 2.5GbE and one 5GbE port. If your device has two 2.5GbE ports (2x Intel I226-V, check with `lspci | grep -i ethernet`), that BIOS does **not** apply; use the normal BIOS for your RAM variant. Be careful: that BIOS belongs to another ROM line (`M5G...` instead of `M1V...`), and the supplied flash script uses `AfuEfix64.efi ... /x`, which **skips the ROM ID check** and starts automatically when the USB stick boots. Flashing the wrong BIOS this way is not blocked.
 
 In short, prepare a USB drive with at least 16 GB of capacity and format it to FAT32. Name the volume "WINPE" and copy the extracted files from the ZIP file to the drive. Then, boot the Beelink ME Mini from the USB inserted and the upgrade will start.
 
