@@ -1,6 +1,7 @@
 # Info and Setup for the Beelink ME Mini
 
    * [General](#general)
+   * [Physical SSD Slots](#physical-ssd-slots)
    * [Common and Solvable Issues](#common-and-solvable-issues)
    * [Recommended NVME's](#recommended-nvmes)
    * [Thermal Improvements](#thermal-improvements)
@@ -9,16 +10,41 @@
    * [BIOS](#bios)
       * [Update the BIOS](#update-the-bios)
       * [Change BIOS Settings](#change-bios-settings)
+   * [Known Issue: NVMe Drives Dropping Out Under Load](#known-issue-nvme-drives-dropping-out-under-load)
+      * [Symptoms](#symptoms)
+      * [What Was Tested](#what-was-tested)
+      * [Recovery](#recovery)
+      * [Recommendations](#recommendations)
 
 ## General
 
 The [Beelink ME Mini](https://www.bee-link.com/products/beelink-me-mini-n150) is imho a perfect hardware for running [TrueNas](https://www.truenas.com/) in home and small office environments.
 
-There are some caveats from other posters you will find on the interent, but from my perspective it is a good choice **when you prepare properly** especially the BIOS and using up-to-date NVMe firmware.
+There are some caveats from other posters you will find on the internet, but from my perspective it is a good choice **when you prepare properly** especially the BIOS and using up-to-date NVMe firmware.
 
-After months in opration, it turns out that the `Beelink ME Mini` is fully reliable an absolutly silent.
+After months in operation, the `Beelink ME Mini` is absolutely silent and reliable in normal operation. However, under sustained full load of all NVMe drives (for example a ZFS scrub), drives can drop out temporarily, see [Known Issue: NVMe Drives Dropping Out Under Load](#known-issue-nvme-drives-dropping-out-under-load).
 
 Note that I have added Amazon links to the additional products I used besides the Beelink Me Mini.
+
+## Physical SSD Slots
+
+The Beelink manual numbers the M.2 slots `SSD 1` to `SSD 6`. With the bottom cover removed:
+
+* Power connector on the **left**: `SSD 3`, `SSD 2`, `SSD 1` from left to right.
+* Device turned around, power connector on the **right**: `SSD 4`, `SSD 5`, `SSD 6` from left to right.
+
+`SSD 4` is the only slot with PCIe 3.0 x2, all others run at PCIe 3.0 x1. In Linux, the PCI address follows the slot number (observed on BIOS M1V404):
+
+| Slot | PCI address | Link |
+|---|---|---|
+| SSD 1 | 03:00.0 | x1 |
+| SSD 2 | 04:00.0 | x1 |
+| SSD 3 | 05:00.0 | x1 |
+| SSD 4 | 06:00.0 | x2 |
+| SSD 5 | 07:00.0 | x1 |
+| SSD 6 | 08:00.0 | x1 |
+
+Note that the `/dev/nvmeX` names are **not** stable: they can change between boots, especially when a drive is missing. Identify drives by serial number (`sudo nvme list`, `/dev/disk/by-id`) instead.
 
 ## Common and Solvable Issues
 
@@ -29,7 +55,7 @@ Note that I have added Amazon links to the additional products I used besides th
 
 ## Recommended NVME's
 
-I use six [Samsung 990 PRO 2TB NVMe SSDs](https://www.amazon.de/dp/B0B9C4DKKG?ref=fed_asin_title), which are very stable and reliable in the Beelink Me Mini. Although these PRO NVMe SSDs are more expensive, they provide a long-lasting, worry-free experience. Based on my experience with many other setups over the years, I can rely on the PRO versions, especially for storage. They are also very power efficient, which takes advantage of the maximum power available on the Mini. As you can see in the stress test I conducted, which includes performance, temperature, and power draw values, temperature and power draw are not issues at all.
+I use six [Samsung 990 PRO 2TB NVMe SSDs](https://www.amazon.de/dp/B0B9C4DKKG?ref=fed_asin_title), which are very stable and reliable in the Beelink Me Mini. Although these PRO NVMe SSDs are more expensive, they provide a long-lasting, worry-free experience. Based on my experience with many other setups over the years, I can rely on the PRO versions, especially for storage. They are also very power efficient, which takes advantage of the maximum power available on the Mini. As you can see in the stress test I conducted, which includes performance, temperature, and power draw values, temperature and power draw are not an issue in normal operation. See the known issue below for sustained full load.
 
 ## Thermal Improvements
 
@@ -87,7 +113,8 @@ The Beelink ME Mini typically ships with an outdated BIOS that must be upgraded 
 **I consider this a mandatory task for worry-free operation.**
 
 Download the BIOS from the source which can be found at [dr.bee-link.cn](https://dr.bee-link.cn/?dir=uploads%2FMEmini).
-At the time of writing, this was `M1V307`. You will also find instructions on how to install it. To easy access, I have provided a direct download link to the BIOS from this repository: [M1V307_12G.zip](./M1V307_12G.zip).
+At the time of writing, this was `M1V307`; my device now runs `M1V404`. You will also find instructions on how to install it. For easy access, I have provided a direct download link to an older BIOS from this repository: [M1V307_12G.zip](./M1V307_12G.zip).\
+**Note:** the BIOS files are specific to the RAM variant (e.g. `12G` and `16G`). Always download the latest BIOS that matches **your** device from the source above.
 
 In short, prepare a USB drive with at least 16 GB of capacity and format it to FAT32. Name the volume "WINPE" and copy the extracted files from the ZIP file to the drive. Then, boot the Beelink ME Mini from the USB inserted and the upgrade will start.
 
@@ -142,7 +169,7 @@ Optimize the eMMC interface in HS400 mode for maximum data transfer speeds and r
   ```
 
 * Increase recognition time for PCIe devices such as NVME:\
-**This fixes the issue of NVMe drives not being partially recognized after rebooting or a power loss.** No need to fiddle with kernel power options for PCIe / NVME in TrueNAS! This is important because if you don't set it, you may need to reboot manually a couple of times, hoping that all NVMe drives are detected properly. While running TrueNAS, you can verify that all drives have been properly identified by typing `sudo nvme list`.
+**This greatly reduces the issue of NVMe drives not being recognized after rebooting or a power loss.** This is important because if you don't set it, you may need to reboot manually a couple of times, hoping that all NVMe drives are detected properly. Note that even with this setting, a drive that dropped out under load (see the known issue below) may need one or more additional reboots until its PCIe link comes up again. While running TrueNAS, you can verify that all drives have been properly identified by typing `sudo nvme list`.
   ```
   PCH-IO Configuration >
   PCI Express root port (do on all roots) >
@@ -154,3 +181,47 @@ Optimize the eMMC interface in HS400 mode for maximum data transfer speeds and r
   PCI Express root port (do on all roots) >
   Detect timeout - 2000 (was 0)
   ```
+
+## Known Issue: NVMe Drives Dropping Out Under Load
+
+### Symptoms
+
+Under sustained full load of all NVMe drives, typically the monthly ZFS scrub of a pool spanning five drives, one or more drives sporadically drop off the PCIe bus. The drives themselves are not defective: after one or more reboots they are back and work fine.
+
+The kernel log shows:
+
+```
+nvme nvmeX: controller is down; will reset: CSTS=0xffffffff, PCI_STATUS=0xffff
+nvme nvmeX: Does your device have a faulty power saving mode enabled?
+nvme 0000:0Y:00.0: Unable to change power state from D3cold to D0, device inaccessible
+nvme nvmeX: Disabling device after reset failure: -19
+```
+
+ZFS marks the drive as `REMOVED` and the pool as `DEGRADED`. If a second drive is lost or has read errors at the same time, a single parity pool (e.g. draid1) reports permanent errors or gets `SUSPENDED`. In my case, the files reported as permanently damaged were readable again once the dropped drive was back, and the errors of a suspended pool were only interrupted I/O, not damaged data.
+
+After the drop, the PCIe link of the affected slot often fails to come up at the next boot (`pci 0000:00:1c.x: broken device, retraining non-functional downstream link at 2.5GT/s` / `retraining failed`), even with the BIOS detect timeout set. A warm reboot and a cold power cycle behaved the same; it can take 2-3 reboots.
+
+### What Was Tested
+
+Tests with a manual scrub of a draid1 pool over five Samsung 990 PRO 2TB drives (TrueNAS 26, BIOS M1V404, latest NVMe firmware, bottom cover closed):
+
+| Test | Scrub speed | Result |
+|---|---|---|
+| Slower scrub (`zfs_vdev_scrub_max_active=1`, `zfs_scan_vdev_limit=4M`) | ~0.2 GB/s | one drive dropped after 38 s |
+| NVMe APST disabled (`nvme set-feature -f 0x0c -v 0`) | ~2.2 GB/s | one drive dropped after 64 s |
+| Two drives swapped between slots | ~2.6 GB/s | after 15 min **two drives on different slots dropped in the same second** |
+
+So it is neither a single drive nor a single slot, and neither heat (drives at ~50 C when the first drops happened), nor the scrub speed, nor drive power saving prevent it. The drop of two drives at the same moment points to a shared cause on the board, most likely the power supply of the M.2 slots under sustained load. Note that the 990 PRO offers no lower power active state (PS0-PS2 are all 9.39 W max), so capping the power state is not an option.
+
+### Recovery
+
+1. If a scrub is running, **pause it** before rebooting: `sudo zpool scrub -p <pool>`.\
+An interrupted (not paused) scrub restarts automatically when the pool is imported at boot, at full speed and without redundancy.
+2. Reboot (`sudo reboot`) until all drives are detected again: `sudo nvme list`.
+3. ZFS resilvers the missing writes automatically, usually within seconds.
+4. Clear the error counters: `sudo zpool clear <pool>`, check with `sudo zpool status -v <pool>`.
+
+### Recommendations
+
+* Do not let a scheduled scrub run unattended at night without monitoring. Watch for a dropped drive and pause the scrub immediately, so no second drive is put under load while the pool has no redundancy.
+* Use the x2 slot (`SSD 4`) for the TrueNAS boot drive (with apps), as recommended by Beelink. A dRAID pool gains nothing from one faster member, because it runs at the pace of its slowest members.

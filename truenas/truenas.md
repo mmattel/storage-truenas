@@ -12,14 +12,14 @@ Before starting any installation, read the [Beelink ME Mini preparation page](..
 
 ## Assumptions
 
-Read the following assumtions and adapt to your environment, capacity based on 6x 2TB NVMe drives:
+Read the following assumptions and adapt to your environment, capacity based on 6x 2TB NVMe drives:
 
 **Overview:**
 
 * eMMC &emsp; &emsp; &emsp; &emsp; &nbsp; --> &emsp; &emsp; Debian
 * NVMEs
   * boot-pool: &emsp; &nbsp; 32GB &emsp; (no raid protection)
-  * apps-pool: &emsp; 712TB &emsp; (no raid protection)
+  * apps-pool: &emsp; 712GB &emsp; (no raid protection)
   * data-pool: &emsp; &nbsp; 1.1TB &emsp; (no raid protection)
   * big-pool: &emsp; &ensp; &nbsp; 7.8TB &emsp; (draid1 protected)
 
@@ -29,7 +29,7 @@ Read the following assumtions and adapt to your environment, capacity based on 6
 * TrueNAS will be installed at NVME slot4.\
 This is the recommended location according Beelink when not using eMMC.\
 NVME slot4 uses PCIe 3.0 double speed and the NVMEs have greatly improved duration and performance compared to eMMC. 
-  * The boot device (`sudo nvme list` --> `/dev/nvme3n1`) will be partitioned the following way:
+  * The boot device will be partitioned the following way. Identify it by its serial number with `sudo nvme list`; the `/dev/nvmeX` names can change between boots:
     *  32GB for TrueNAS (1)
     * 712GB ZFS pool for apps (2)
     * 1.1TB ZFS pool for apps data (2)
@@ -45,7 +45,7 @@ NVME slot4 uses PCIe 3.0 double speed and the NVMEs have greatly improved durati
 
 ### First Time Installation
 
-When installing TrueNAS the **first time**, you need to `tweak` the installation to partition the used disk. Otherwise a full NVMe drive would be used wasting more or less 2TB of space. See the [Truenas Install Partitioning Guide](./truenas_install_partitioning.pdf) for more details. Note that this may change in subsquent versions. 
+When installing TrueNAS the **first time**, you need to `tweak` the installation to partition the used disk. Otherwise a full NVMe drive would be used wasting more or less 2TB of space. See the [Truenas Install Partitioning Guide](./truenas_install_partitioning.pdf) for more details. Note that this may change in subsequent versions. 
 
 
 ### Upgrading TrueNAS
@@ -54,4 +54,4 @@ Upgrading TrueNAS is straightforward and done from within the operating system. 
 
 ### Partitioning Remaining NVMe Space
 
-This proceure an be found in the same document [Truenas Install Partitioning Guide](./truenas_install_partitioning.pdf) starting at page 6.
+This procedure can be found in the same document [Truenas Install Partitioning Guide](./truenas_install_partitioning.pdf) starting at page 6.
